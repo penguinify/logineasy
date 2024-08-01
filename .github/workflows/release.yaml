@@ -29,6 +29,18 @@ jobs:
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${{ github.event.inputs.version }}" \
               --generate-notes
+      
+      - name: deps
+        run: sudo apt-get update && sudo apt-get install -y gcc clang cmake
+      - name: Set up osxcross
+        run: |
+          git clone https://github.com/tpoechtrager/osxcross.git
+          cd osxcross
+          mkdir -p tarballs
+          wget https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX10.11.sdk.tar.xz -P tarballs
+          UNATTENDED=yes ./build.sh
+          echo "::add-path::$(pwd)/target/bin"
+          echo "::add-path::$(pwd)/target/macports/pkgs/opt/local/bin"
       - name: Build Artifacts
         run: make build-darwin
       - name: upload darwin artifact
@@ -39,4 +51,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist/logineasy
           asset_name: logineasy
-   
+ 
