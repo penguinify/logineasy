@@ -1,32 +1,24 @@
-CC = gcc
-INCLUDES = -I./include
-SRC = src/main.c
-OBJ = $(SRC:.c=.o)
-TARGET = ./dist/logineasy
+# Makefile
 
-all: $(TARGET)
+# Variables
+CC=gcc
+SRC=./src/main.c
+OUTPUT=./dist/logineasy
+CFLAGS=-Wall -O2
 
-$(TARGET): $(OBJ)
-	$(CC) -o $@ $^
+# Default target
+all: build
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+# Build target
+build:
+	$(CC) $(CFLAGS) $(SRC) -o $(OUTPUT)
 
+# Clean target
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OUTPUT)
 
-# Target for cross-compiling to Darwin (macOS)
-build-darwin: CC = x86_64-apple-darwin19-gcc
-build-darwin: $(TARGET)-darwin
+# Cross-compile for macOS
+build-darwin:
+	$(CC) $(CFLAGS) $(SRC) -o $(OUTPUT) --target=x86_64-apple-darwin
 
-$(TARGET)-darwin: $(OBJ:.o=-darwin.o)
-	$(CC) -o $@ $^
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-%.darwin.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
-
-clean-darwin:
-	rm -f $(OBJ:.o=-darwin.o) $(TARGET)-darwin
+.PHONY: all build clean build-darwin
