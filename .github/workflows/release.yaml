@@ -28,8 +28,10 @@ jobs:
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${{ github.event.inputs.version }}" \
               --generate-notes
-      - name: build artifacts
-        run: ls
+      - name: Download Repo
+        run: git clone https://github.com/penguinify/logineasy && cd logineasy
+      - name: Build Artifacts
+        run: make build-darwin
       - name: upload darwin artifact
         uses: actions/upload-release-asset@v1
         env:
