@@ -19,6 +19,7 @@ jobs:
     name: Release pushed tag
     runs-on: ubuntu-22.04
     steps:
+      - uses: actions/checkout@v2
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -28,8 +29,6 @@ jobs:
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${{ github.event.inputs.version }}" \
               --generate-notes
-      - name: Download Repo
-        run: git clone https://github.com/penguinify/logineasy && cd logineasy
       - name: Build Artifacts
         run: make build-darwin
       - name: upload darwin artifact
