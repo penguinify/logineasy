@@ -71,11 +71,11 @@ void print_launchagents() {
 
         printf("%s (%s)\n", agent.name, agent.path);
 
-        char *path;
+        char path[256];
         if (agent.syspath == 0) {
-            path = strcat(getenv("HOME"), agent.path);
+            snprintf(path, sizeof(path), "%s%s", getenv("HOME"), agent.path);
         } else {
-            path = agent.path;
+            snprintf(path, sizeof(path), "%s", agent.path);
         }
         
         if (print_dir(path) != 0) {
