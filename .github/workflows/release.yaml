@@ -1,0 +1,30 @@
+# This is a basic workflow that is manually triggered
+
+name: Publish Release
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release pushed tag
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "${{ github.event.inputs.version }}" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${{ github.event.inputs.version }}" \
+              --generate-notes
